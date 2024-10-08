@@ -14,26 +14,24 @@ struct SNode {
 };
 
 template <typename T>
-struct SLinkedList {
+struct SList {
 private:
     int len;
 
 public:
     SNode<T>* head;
 
-    SLinkedList() {
+    SList() {
         head = nullptr;
         len = 0;
     }
-    // ~LinkedList() {
-    //     while (head!= nullptr) {
-    //         SNode<T>* oldHead = head;
-    //         head = head->next;
-    //         delete oldHead;
-    //     }
-    // }
 
-    void pushForward(SNode<T>* node) {
+    int size() const {
+        return len;
+    }
+
+    void pushForward(T val) {
+        SNode<T>* node = new SNode<T>(val);
         SNode<T>* oldHead = head;
         head = node;
         node->next = oldHead;
@@ -53,6 +51,20 @@ public:
         }
         current->next = node;
         len++;
+    }
+
+    T get(int index) const {
+        if (index < 0 || index >= len) {
+            throw runtime_error("Index out of bounds");
+        }
+
+        SNode<T>* current = head;
+        int c = 0;
+        while (c != index && current != nullptr) {
+            current = current->next;
+            c++;
+        }
+        return current->value;
     }
 
     void removeForward() {
@@ -111,10 +123,25 @@ public:
         }
         return nullptr;
     }
+
+    string join(char delimiter) {
+        string result;
+        SNode<string>* current = head;
+
+        while (current != nullptr) {
+            result += current->value;
+            if (current->next != nullptr) {
+                result += delimiter;
+            }
+            current = current->next;
+        }
+
+        return result;
+    }
 };
 
 template <typename T>
-ostream& operator<<(ostream& os, const SLinkedList<T>& list) {
+ostream& operator<<(ostream& os, const SList<T>& list) {
     auto head = list.head;
     while (head != nullptr) {
         cout << head->value << endl;

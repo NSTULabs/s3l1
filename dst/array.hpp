@@ -93,6 +93,14 @@ public:
         delete[] data;
         data = newData;
     }
+
+    void reverse() {
+        for (int i = 0; i < len / 2; i++) {
+            T temp = data[i];
+            data[i] = data[len - i - 1];
+            data[len - i - 1] = temp;
+        }
+    }
 };
 
 template <typename T>
