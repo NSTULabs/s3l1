@@ -21,7 +21,9 @@ void createFile(const string filename) {
         file << "Queue" << endl << endl;
         file << "Stack" << endl << endl;
         file << "AvlTree" << endl << endl;
-        file << "List" << endl << endl;
+        file << "DList" << endl << endl;
+        file << "SList" << endl << endl;
+        file << "Set" << endl << endl;
         file.close();
     } else {
         throw runtime_error("Error opening file for writing");

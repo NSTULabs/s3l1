@@ -144,7 +144,7 @@ template <typename T>
 ostream& operator<<(ostream& os, const SList<T>& list) {
     auto head = list.head;
     while (head != nullptr) {
-        cout << head->value << endl;
+        os << head->value << " ";
         head = head->next;
     }
     return os;

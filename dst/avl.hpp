@@ -114,13 +114,11 @@ struct AVLTree {
             return node;
         }
 
-        // Находим узел для удаления
         if (value < node->value) {
             node->left = remove(node->left, value);
         } else if (value > node->value) {
             node->right = remove(node->right, value);
-        } else {
-            // Узел найден
+        } else { // узел для удаления найден
             if (node->left == nullptr || node->right == nullptr) { // если один ребёнок
                 AVLTreeNode* temp = node->left ? node->left : node->right;
                 if (temp == nullptr) { // если нет детей
@@ -144,7 +142,6 @@ struct AVLTree {
         return balanceNode(node);
     }
 
-    // Получение минимального значения узла
     AVLTreeNode* getMinValueNode(AVLTreeNode* node) {
         AVLTreeNode* current = node;
         while (current->left != nullptr) {
@@ -158,22 +155,20 @@ struct AVLTree {
         head = remove(head, value);
     }
 
-    // Поиск узла по значению
-    AVLTreeNode* search(AVLTreeNode* node, int value) {
+    AVLTreeNode* findRecursion(AVLTreeNode* node, int value) {
         if (node == nullptr || node->value == value) {
             return node;
         }
 
         if (value < node->value) {
-            return search(node->left, value);
+            return findRecursion(node->left, value);
         } else {
-            return search(node->right, value);
+            return findRecursion(node->right, value);
         }
     }
 
-    // Метод поиска узла по значению
     AVLTreeNode* find(int value) {
-        return search(head, value);
+        return findRecursion(head, value);
     }
 
     void serializeNode(AVLTreeNode* node, string& result) {
@@ -181,9 +176,9 @@ struct AVLTree {
             result += "#-";  // символ для обозначения null
             return;
         }
-        result += to_string(node->value) + "-";  // записываем значение узла
-        serializeNode(node->left, result);           // левое поддерево
-        serializeNode(node->right, result);          // правое поддерево
+        result += to_string(node->value) + "-";
+        serializeNode(node->left, result);
+        serializeNode(node->right, result);
     }
 
     // AVLTreeNode -> string

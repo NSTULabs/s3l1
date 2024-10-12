@@ -11,6 +11,7 @@
 #include "../dst/dlist.hpp"
 #include "../dst/map.hpp"
 #include "../dst/avl.hpp"
+#include "../dst/set.hpp"
 
 using namespace std;
 
@@ -140,8 +141,8 @@ Stack<string> readStack(string name) {
     return stack;
 }
 
-Dlist<string> readDlist(string name) {
-    Dlist<string> dlist;
+DList<string> readDList(string name) {
+    DList<string> dlist;
 
     ifstream file(FILENAME);
 
@@ -153,7 +154,7 @@ Dlist<string> readDlist(string name) {
     
     bool isArray = false;
     while (getline(file, line)) {
-        if (line == "List") {
+        if (line == "DList") {
             isArray = true;
         } else if (line == "" && isArray) {
             break;
@@ -180,6 +181,93 @@ Dlist<string> readDlist(string name) {
     file.close();
 
     return dlist;
+}
+
+SList<string> readSList(string name) {
+    SList<string> slist;
+
+    ifstream file(FILENAME);
+
+    if (!file.is_open()) {
+        throw runtime_error("Error opening file");
+    }
+
+    string line;
+    
+    bool isArray = false;
+    while (getline(file, line)) {
+        if (line == "SList") {
+            isArray = true;
+        } else if (line == "" && isArray) {
+            break;
+        } else if (isArray) {
+            Array<string> splittedLine = split(line, ' ');
+
+            if (splittedLine.size() != 2) {
+                continue;
+            }
+
+            if (splittedLine.get(0) == name) {
+                Array<string> array = split(splittedLine.get(1), ','); // делим по запятым второй аргумент
+                if (array.size() == 1 && array.get(0) == "") { // при пустой строке создаётся массив с пустой строкой, надо удалить эту строку, чтоб сделать пустой массив
+                    array.remove(0);
+                }
+                for (int i = 0; i < array.size(); i++) {
+                    slist.pushBack(array.get(i));
+                }
+                return slist;
+            }
+        }
+    }
+
+    file.close();
+
+    return slist;
+}
+
+Set<bool> readSet(string name) {
+    Set<bool> set;
+
+    ifstream file(FILENAME);
+
+    if (!file.is_open()) {
+        throw runtime_error("Error opening file");
+    }
+
+    string line;
+    
+    bool isArray = false;
+    while (getline(file, line)) {
+        if (line == "Set") {
+            isArray = true;
+        } else if (line == "" && isArray) {
+            break;
+        } else if (isArray) {
+            Array<string> splittedLine = split(line, ' ');
+
+            if (splittedLine.size() != 2) {
+                continue;
+            }
+
+            if (splittedLine.get(0) == name) {
+                Array<string> array = split(splittedLine.get(1), ','); // делим по точке-запятой второй аргумент
+                if (array.size() == 1 && array.get(0) == "") { // при пустой строке создаётся массив с пустой строкой, надо удалить эту строку, чтоб сделать пустой массив
+                    array.remove(0);
+                } else {
+                    for (int i = 0; i < array.size(); i++) {
+                        string key = array.get(i);
+                        set.put(key);
+                    }
+                }
+                
+                return set;
+            }
+        }
+    }
+
+    file.close();
+
+    return set;
 }
 
 Map<string> readMap(string name) {

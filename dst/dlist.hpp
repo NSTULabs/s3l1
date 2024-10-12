@@ -16,26 +16,19 @@ struct DNode {
 };
 
 template <typename T>
-struct Dlist {
+struct DList {
 private:
     int len;
 
 public:
     DNode<T>* head;
+    DNode<T>* tail;
 
-    Dlist() {
+    DList() {
         head = nullptr;
+        tail = nullptr;
         len = 0;
     }
-    
-    // ~Dlist() {
-    //     while (head != nullptr) {
-    //         DNode<T>* oldHead = head;
-    //         head = head->next;
-    //         delete oldHead;
-    //         len--;
-    //     }
-    // }
 
     int size() const {
         return len;
@@ -59,6 +52,7 @@ public:
         DNode<T>* node = new DNode<T>(value);
         if (head == nullptr) {
             head = node;
+            tail = node; // Хвост и голова совпадают
         } else {
             DNode<T>* oldHead = head;
             head = node;
@@ -72,13 +66,11 @@ public:
         DNode<T>* node = new DNode<T>(value);
         if (head == nullptr) {
             head = node;
+            tail = node;
         } else {
-            DNode<T>* current = head;
-            while (current->next != nullptr) {
-                current = current->next;
-            }
-            current->next = node;
-            node->prev = current;
+            tail->next = node; // Присоединяем к хвосту
+            node->prev = tail;
+            tail = node; // Обновляем хвост
         }
         len++;
     }
@@ -92,6 +84,8 @@ public:
         head = head->next;
         if (head != nullptr) {
             head->prev = nullptr;
+        } else {
+            tail = nullptr; // Если голова удалена, хвост тоже
         }
         delete oldHead;
         len--;
@@ -105,18 +99,17 @@ public:
         if (head->next == nullptr) { // Единственный элемент
             delete head;
             head = nullptr;
+            tail = nullptr;
         } else {
-            DNode<T>* current = head;
-            while (current->next != nullptr) {
-                current = current->next;
-            }
-            current->prev->next = nullptr;
+            DNode<T>* current = tail; 
+            current->prev->next = nullptr; 
+            tail = current->prev; // Обновляем хвост
             delete current;
         }
         len--;
     }
 
-    void removeValue(const T& value) {
+        void removeValue(const T& value) {
         DNode<T>* current = head;
 
         while (current != nullptr) {
@@ -130,6 +123,8 @@ public:
 
                 if (current->next != nullptr) { // Узел не последний
                     current->next->prev = current->prev;
+                } else { // Последний узел
+                    tail = current->prev; 
                 }
 
                 current = current->next;
@@ -169,7 +164,7 @@ public:
 };
 
 template <typename T>
-ostream& operator<<(ostream& os, const Dlist<T>& list) {
+ostream& operator<<(ostream& os, const DList<T>& list) {
     auto head = list.head;
     while (head != nullptr) {
         os << head->value << " ";

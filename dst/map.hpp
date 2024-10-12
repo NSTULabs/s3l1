@@ -8,17 +8,19 @@
 using namespace std;
 
 template <typename T>
+struct MapNode {
+    string key;
+    T value;
+    MapNode<T>* next;
+
+    MapNode<T>(string k, T v) : key(k), value(v), next(nullptr) {}
+};
+
+template <typename T>
 struct Map {
 private:
-    struct KeyVal {
-        string key;
-        T value;
-        KeyVal* next;
 
-        KeyVal(string k, T v) : key(k), value(v), next(nullptr) {}
-    };
-
-    KeyVal** data;
+    MapNode<T>** data;
     int cap;
     int len;
     double loadFactor;
@@ -29,14 +31,14 @@ public:
         len = 0;
         loadFactor = 0.50;
 
-        data = new KeyVal*[cap];
+        data = new MapNode<T>*[cap];
 
         for (int i = 0; i < cap; i++) {
             data[i] = nullptr;
         }
     }
 
-    KeyVal** getData() const {
+    MapNode<T>** getData() const {
         return data;
     }
 
@@ -64,9 +66,9 @@ public:
         uint32_t index = hash(key) % cap;
 
         if (data[index] == nullptr) { // бакета нет
-            data[index] = new KeyVal(key, value);
+            data[index] = new MapNode<T>(key, value);
         } else { // бакет есть -> добавляем в него
-            KeyVal* current = data[index];
+            MapNode<T>* current = data[index];
             if (current->key == key) {
                 current->value = value;
                 return;
@@ -80,7 +82,7 @@ public:
                 current = current->next;
             }
 
-            current->next = new KeyVal(key, value);
+            current->next = new MapNode<T>(key, value);
         }
 
         len++;
@@ -89,7 +91,7 @@ public:
     T get(string key) const {
         uint32_t index = hash(key) % cap;
 
-        KeyVal* current = data[index];
+        MapNode<T>* current = data[index];
         while (current != nullptr) {
             if (current->key == key) {
                 return current->value;
@@ -103,8 +105,8 @@ public:
     void remove(string key) {
         uint32_t index = hash(key) % cap;
 
-        KeyVal* prev = nullptr;
-        KeyVal* current = data[index];
+        MapNode<T>* prev = nullptr;
+        MapNode<T>* current = data[index];
 
         while (current != nullptr) {
             if (current->key == key) {
@@ -128,23 +130,23 @@ public:
     }
 
     void rehash(int newcap) {
-        KeyVal** newMap = new KeyVal*[newcap];
+        MapNode<T>** newMap = new MapNode<T>*[newcap];
 
         for (int i = 0; i < newcap; i++) {
             newMap[i] = nullptr;
         }
 
         for (int i = 0; i < cap; i++) {
-            KeyVal* current = data[i];
+            MapNode<T>* current = data[i];
             while (current != nullptr) {
-                KeyVal* next = current->next;
+                MapNode<T>* next = current->next;
                 uint32_t newIndex = hash(current->key) % newcap;
                 
                 if (newMap[newIndex] == nullptr) { // бакета нет
                     current->next = nullptr;
                     newMap[newIndex] = current;
                 } else { // бакет есть -> добавляем в него
-                    KeyVal* currentNewMap = newMap[newIndex];
+                    MapNode<T>* currentNewMap = newMap[newIndex];
 
                     while (currentNewMap->next != nullptr) {
                         currentNewMap = currentNewMap->next;
@@ -165,7 +167,7 @@ public:
         string result = "";
 
         for (int i = 0; i < cap; i++) {
-            KeyVal* current = data[i];
+            MapNode<T>* current = data[i];
             while (current != nullptr) {
                 result += current->key + "," + current->value + ";";
                 current = current->next;
@@ -178,7 +180,7 @@ public:
 
 template <typename T>
 ostream& operator<<(ostream& os, const Map<T>& map) {
-    auto data = map.getData();
+    MapNode<T>** data = map.getData();
     for (int i = 0; i < map.getCap(); i++) {
         if (data[i] != nullptr) {
             auto current = data[i];

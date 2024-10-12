@@ -1,15 +1,15 @@
-#ifndef DLIST_MENU
-#define DLIST_MENU
-#include "../dst/dlist.hpp"
+#ifndef LIST_MENU
+#define LIST_MENU
+#include "../dst/slist.hpp"
 #include "../utils/fileread.hpp"
 #include "../utils/filewrite.hpp"
 
-const string DLIST_SECTION = "DList";
+const string SLIST_SECTION = "SList";
 
-void dlistMenu(Array<string> arguments) {
+void listMenu(Array<string> arguments) {
     string command = arguments.get(0);
 
-    if (command == "DLPUSH") {
+    if (command == "LPUSH") {
         if (arguments.size() != 3) {
             throw runtime_error("incorrect count of arguments");
         }
@@ -20,10 +20,10 @@ void dlistMenu(Array<string> arguments) {
             throw runtime_error(", shouldn't be in pushed element");
         }
 
-        DList<string> dlist = readDList(nameArr);
-        dlist.pushBack(element);
-        save(DLIST_SECTION, nameArr, nameArr + " " + dlist.join(','));
-    } else if (command == "DLPUSHF") {
+        SList<string> slist = readSList(nameArr);
+        slist.pushBack(element);
+        save(SLIST_SECTION, nameArr, nameArr + " " + slist.join(','));
+    } else if (command == "LPUSHF") {
         if (arguments.size() != 3) {
             throw runtime_error("incorrect count of arguments");
         }
@@ -34,38 +34,38 @@ void dlistMenu(Array<string> arguments) {
             throw runtime_error(", shouldn't be in pushed element");
         }
 
-        DList<string> dlist = readDList(nameArr);
-        dlist.pushForward(element);
-        save(DLIST_SECTION, nameArr, nameArr + " " + dlist.join(','));
-    } else if (command == "DLDELV") {
+        SList<string> slist = readSList(nameArr);
+        slist.pushForward(element);
+        save(SLIST_SECTION, nameArr, nameArr + " " + slist.join(','));
+    } else if (command == "LDELV") {
         if (arguments.size() != 3) {
             throw runtime_error("incorrect count of arguments");
         }
         string nameArr = arguments.get(1);
         string value = arguments.get(2);
 
-        DList<string> dlist = readDList(nameArr);
-        dlist.removeValue(value);
-        save(DLIST_SECTION, nameArr, nameArr + " " + dlist.join(','));
-    } else if (command == "DLDELF") {
+        SList<string> slist = readSList(nameArr);
+        slist.removeValue(value);
+        save(SLIST_SECTION, nameArr, nameArr + " " + slist.join(','));
+    } else if (command == "LDELF") {
         if (arguments.size() != 2) {
             throw runtime_error("incorrect count of arguments");
         }
         string nameArr = arguments.get(1);
 
-        DList<string> dlist = readDList(nameArr);
-        dlist.removeForward();
-        save(DLIST_SECTION, nameArr, nameArr + " " + dlist.join(','));
-    } else if (command == "DLDEL") {
+        SList<string> slist = readSList(nameArr);
+        slist.removeForward();
+        save(SLIST_SECTION, nameArr, nameArr + " " + slist.join(','));
+    } else if (command == "LDEL") {
         if (arguments.size() != 2) {
             throw runtime_error("incorrect count of arguments");
         }
         string nameArr = arguments.get(1);
 
-        DList<string> dlist = readDList(nameArr);
-        dlist.removeBack();
-        save(DLIST_SECTION, nameArr, nameArr + " " + dlist.join(','));
-    } else if (command == "DLGET") {
+        SList<string> slist = readSList(nameArr);
+        slist.removeBack();
+        save(SLIST_SECTION, nameArr, nameArr + " " + slist.join(','));
+    } else if (command == "LGET") {
         if (arguments.size() != 3) {
             throw runtime_error("incorrect count of arguments");
         }
@@ -77,16 +77,16 @@ void dlistMenu(Array<string> arguments) {
             throw runtime_error("argument should be number");
         }
 
-        DList<string> dlist = readDList(nameArr);
-        cout << dlist.get(index) << endl;
-    } else if (command == "DLPRINT") {
+        SList<string> slist = readSList(nameArr);
+        cout << slist.get(index) << endl;
+    } else if (command == "LPRINT") {
         if (arguments.size() != 2) {
             throw runtime_error("incorrect count of arguments");
         }
         string nameArr = arguments.get(1);
 
-        DList<string> dlist = readDList(nameArr);
-        cout << dlist << endl;
+        SList<string> slist = readSList(nameArr);
+        cout << slist << endl;
     } else {
         throw runtime_error("unknown command");
     }

@@ -42,7 +42,6 @@ void mapMenu(Array<string> arguments) {
             throw runtime_error("incorrect count of arguments");
         }
         string name = arguments.get(1);
-        int index;
         string key = arguments.get(2);
 
         Map<string> map = readMap(name);
